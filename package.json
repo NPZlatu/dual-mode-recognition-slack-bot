@@ -1,0 +1,22 @@
+{
+  "name": "dual-mode-recognition-slack-bot",
+  "version": "1.0.0",
+  "description": "A Slack bot built with Bolt for JavaScript that recognizes small developer wins and delivers notifications in two modes — real-time and daily digest — using event webhooks from tools like GitHub and Trello.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch src/app/index.ts",
+    "build": "tsc",
+    "start": "node dist/app/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^24.7.2",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
