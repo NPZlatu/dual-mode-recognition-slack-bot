@@ -1,4 +1,22 @@
-import os from "os";
+import express from "express";
+import type { Request, Response } from "express";
+import dotenv from "dotenv";
 
-console.log("Hello from TypeScript + Node.js!");
-console.log("Your system info:", os.platform(), os.version());
+// Load environment variables from .env file
+dotenv.config();
+
+const app = express();
+
+const { PORT } = process.env;
+
+app.get("/health", (_req: Request, res: Response) => {
+  res.status(200).send("OK");
+});
+
+app.get("/", (_req: Request, res: Response) => {
+  res.send("Hello from Express + TypeScript!");
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
