@@ -1,22 +1,40 @@
-import express from "express";
-import type { Request, Response } from "express";
+import { App } from "@slack/bolt";
 import dotenv from "dotenv";
-
-// Load environment variables from .env file
+import { firstCommitRecognition } from "../constants/index.js";
 dotenv.config();
 
-const app = express();
-
-const { PORT } = process.env;
-
-app.get("/health", (_req: Request, res: Response) => {
-  res.status(200).send("OK");
+const app = new App({
+  token: process.env.SLACK_BOT_TOKEN!,
+  signingSecret: process.env.SLACK_SIGNING_SECRET!,
 });
 
-app.get("/", (_req: Request, res: Response) => {
-  res.send("Hello from Express + TypeScript!");
-});
+(async () => {
+  await app.start();
+  console.log("⚡️ Bolt app is running!");
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+  // Step 1: Find user by email
+  const user = await app.client.users.lookupByEmail({
+    email: "nirazlatu@gmail.com",
+  });
+
+  if (!user.ok) {
+    console.error("Error finding user:", user.error);
+    return;
+  }
+
+  // Step 2: Open a DM with that user
+  const { channel } = await app.client.conversations.open({
+    users: user?.user?.id || "",
+  });
+
+  if (!channel) {
+    console.error("Error opening conversation");
+    return;
+  }
+
+  // Step 3: Send message to that DM
+  await app.client.chat.postMessage({
+    channel: channel.id || "",
+    text: firstCommitRecognition,
+  });
+})();

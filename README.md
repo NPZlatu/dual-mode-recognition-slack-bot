@@ -20,3 +20,9 @@ A Slack bot prototype (Bolt-compatible) that recognizes small developer wins and
 ```sh
 npm install
 ```
+
+## Build
+
+```sh
+npm run build
+```

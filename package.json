@@ -10,7 +10,8 @@
     "start": "node dist/app/index.js",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -33,6 +34,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@slack/bolt": "^4.5.0",
     "dotenv": "^17.2.3",
     "express": "^5.1.0"
   }
