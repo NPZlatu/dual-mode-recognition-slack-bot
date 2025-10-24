@@ -1,6 +1,6 @@
 import { App } from "@slack/bolt";
 import dotenv from "dotenv";
-import { firstCommitRecognition } from "../constants/index.js";
+import { FIRST_COMMIT_RECOGNITION, SLACK_USER_EMAIL } from "../constants/index.js";
 dotenv.config();
 
 const app = new App({
@@ -8,13 +8,16 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET!,
 });
 
-(async () => {
+const initApp = async () => {
   await app.start();
   console.log("⚡️ Bolt app is running!");
+};
 
+const runRecognitionMessage = async () => {
+  await initApp();
   // Step 1: Find user by email
   const user = await app.client.users.lookupByEmail({
-    email: "nirazlatu@gmail.com",
+    email: SLACK_USER_EMAIL,
   });
 
   if (!user.ok) {
@@ -35,6 +38,10 @@ const app = new App({
   // Step 3: Send message to that DM
   await app.client.chat.postMessage({
     channel: channel.id || "",
-    text: firstCommitRecognition,
+    text: FIRST_COMMIT_RECOGNITION,
   });
-})();
+
+  console.log("Recognition message sent successfully!");
+};
+
+export default runRecognitionMessage;
