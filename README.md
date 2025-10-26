@@ -24,5 +24,6 @@ npm install
 ## Build
 
 ```sh
+example:
 npm run build
 ```
