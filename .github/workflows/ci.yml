@@ -26,4 +26,5 @@ jobs:
         run: npm run build
 
       - name: ✅ Workflow Success
+        if: ${{ success() }}
         run: echo "Build completed successfully!"
