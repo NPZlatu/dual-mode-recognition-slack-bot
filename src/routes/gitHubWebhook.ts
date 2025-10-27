@@ -4,21 +4,24 @@ const router = express.Router();
 
 router.post("/github-events", async (req, res) => {
   try {
-    console.log("✅ GitHub webhook received:", req.body);
-    res.status(200).send("✅ Webhook received");
-    // const event = req.headers["x-github-event"];
-    // const payload = req.body;
+    const ghEvent = (req.get("x-github-event") || "").toString();
+    const payload = req.body as any;
 
-    // console.log("📬 GitHub Event Received:", event);
+    // Detect GitHub Actions workflow run completion
+    if (ghEvent === "workflow_run") {
+      const action = payload?.action;
+      const run = payload?.workflow_run;
+      if (action === "completed" && run) {
+        const conclusion = run.conclusion;
+        if (conclusion === "success") {
+          console.log("naaice");
+        } else {
+          console.log("nopppe");
+        }
+      }
+    }
 
-    // // Example: handle push event
-    // if (event === "push") {
-    //   const repo = payload.repository.full_name;
-    //   const pusher = payload.pusher.name;
-    //   console.log(`🚀 ${pusher} pushed to ${repo}`);
-    // }
-
-    // res.status(200).send("✅ Event received");
+    res.status(200).send("✅ Webhook processed");
   } catch (error) {
     console.error("Error handling webhook:", error);
     res.status(500).send("Internal Server Error");
