@@ -22,19 +22,20 @@ router.post("/github-events", async (req, res) => {
         const workflowId = String(run.workflow_id ?? run.id ?? "unknown_workflow");
         const key = `${repoFull}:${workflowId}`;
 
-        // update history (keep last 3 conclusions)
         const prev = workflowHistory.get(key) ?? [];
+        const lastTwo = prev.slice(-2);
+        const isRecoveryFromTwoFailures =
+          conclusion === "success" &&
+          lastTwo.length === 2 &&
+          lastTwo[0] === "failure" &&
+          lastTwo[1] === "failure";
+
+        // update history (keep last 3 conclusions)
         prev.push(conclusion);
         const recent = prev.slice(-3);
         workflowHistory.set(key, recent);
 
-        // If current is success and the previous two were failures -> special case
-        if (
-          conclusion === "success" &&
-          recent.length >= 3 &&
-          recent[recent.length - 2] === "failure" &&
-          recent[recent.length - 3] === "failure"
-        ) {
+        if (isRecoveryFromTwoFailures) {
           console.log("naaice");
         } else if (conclusion === "success") {
           // regular success (not preceded by two failures)
