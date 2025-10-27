@@ -1,4 +1,6 @@
 import express from "express";
+import sendDmToUserByEmail from "../utils/sendDm.js";
+import { SLACK_USER_EMAIL } from "../constants/index.js";
 
 const router = express.Router();
 
@@ -36,12 +38,21 @@ router.post("/github-events", async (req, res) => {
         workflowHistory.set(key, recent);
 
         if (isRecoveryFromTwoFailures) {
-          console.log("naaice");
-        } else if (conclusion === "success") {
-          // regular success (not preceded by two failures)
-          console.log("success (no special streak)");
-        } else {
-          console.log("nopppe");
+          // another "best" message similar to the first commit recognition
+          const runLink = (run.html_url || payload?.workflow_run?.html_url || "").toString();
+          const niceWinMessage =
+            "Nice win! After two failed runs, this workflow succeeded — wonderful work! 🎉\n\n" +
+            "Celebrate the fix and keep the momentum going.";
+
+          try {
+            await sendDmToUserByEmail(SLACK_USER_EMAIL, {
+              text: niceWinMessage,
+              link: runLink || undefined,
+            });
+            console.log("Sent nice-win DM");
+          } catch (err) {
+            console.error("Failed to send nice-win DM:", err);
+          }
         }
       }
     }
