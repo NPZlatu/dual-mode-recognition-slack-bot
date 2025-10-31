@@ -19,9 +19,8 @@ jobs:
         with:
           node-version: 20
 
-      # - name: Disable Husky during CI
-      #   run: npm pkg delete scripts.prepare || true
-      # fail-2
+      - name: Disable Husky during CI
+        run: npm pkg delete scripts.prepare || true
 
       - name: Install dependencies
         run: npm ci
