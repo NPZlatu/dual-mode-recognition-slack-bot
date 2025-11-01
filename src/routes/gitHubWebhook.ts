@@ -1,3 +1,5 @@
+/* This code snippet is importing necessary modules and functions for setting up a route handler using
+Express in a TypeScript environment. */
 import express from "express";
 import sendDmToUserByEmail from "../utils/sendDm.js";
 import { SLACK_USER_EMAIL } from "../constants/index.js";

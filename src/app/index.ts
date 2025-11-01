@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import { app, receiver } from "../slack/boltApp.js";
 import githubWebhookRoute from "../routes/gitHubWebhook.js";
+import trelloWebhookRoute from "../routes/trelloWebhook.js";
 import express from "express";
 
 dotenv.config();
@@ -10,6 +11,8 @@ receiver.router.use(express.json());
 
 // Mount the GitHub webhook route
 receiver.router.use("/", githubWebhookRoute);
+// Mount the Trello webhook route
+receiver.router.use("/", trelloWebhookRoute);
 
 // Start the Slack Bolt app
 const startApp = async () => {
