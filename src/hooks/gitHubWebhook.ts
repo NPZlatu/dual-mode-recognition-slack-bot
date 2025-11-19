@@ -11,6 +11,7 @@ const workflowHistory = new Map<string, string[]>();
 
 router.post("/github-events", async (req, res) => {
   try {
+    console.log("I am here");
     const ghEvent = (req.get("x-github-event") || "").toString();
     const payload = req.body as any;
 
