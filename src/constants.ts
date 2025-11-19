@@ -36,4 +36,4 @@ export const DB_URL = `mysql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`;
 
 //CRON CONFIG
 // CRON_PATTERN="0 18 * * *"   // everyday at 6PM
-export const CRON_PATTERN = "*/1 * * * *"; // every 1 mins
+export const CRON_PATTERN = "*/2 * * * *"; // every 2 mins

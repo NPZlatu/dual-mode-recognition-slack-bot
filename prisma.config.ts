@@ -1,5 +1,5 @@
 import { defineConfig } from "prisma/config";
-import { DB_URL } from "./src/constants/index.js";
+import { DB_URL } from "./src/constants.js";
 
 export default defineConfig({
   schema: "src/db/schema.prisma",
