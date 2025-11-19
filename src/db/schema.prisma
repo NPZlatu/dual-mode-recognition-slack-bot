@@ -21,7 +21,7 @@ model MessageQueue {
   channelId          String?
   source             String?
   eventType          String?
-  message            String
+  message            String    @db.LongText
   delivered          Boolean   @default(false)
   retryCount         Int       @default(0)
   batchDate          DateTime?
