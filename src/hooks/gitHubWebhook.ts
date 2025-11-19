@@ -27,16 +27,19 @@ router.post("/github-events", async (req, res) => {
         const key = `${repoFull}:${workflowId}`;
 
         const prev = workflowHistory.get(key) ?? [];
-        const isRecoveryFromFailure =
+        const lastTwo = prev.slice(-2);
+        const isRecoveryFromTwoFailures =
           conclusion === "success" &&
-          prev.length &&
-          prev[0] === "failure" &&
-          // update history (keep last 3 conclusions)
-          prev.push(conclusion);
-        const recent = prev.slice(-2);
+          lastTwo.length === 2 &&
+          lastTwo[0] === "failure" &&
+          lastTwo[1] === "failure";
+
+        // update history (keep last 3 conclusions)
+        prev.push(conclusion);
+        const recent = prev.slice(-3);
         workflowHistory.set(key, recent);
 
-        if (isRecoveryFromFailure) {
+        if (isRecoveryFromTwoFailures) {
           const runLink = (run.html_url || payload?.workflow_run?.html_url || "").toString();
 
           try {
