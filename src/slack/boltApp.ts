@@ -1,17 +1,14 @@
 import Bolt from "@slack/bolt";
 const { App, ExpressReceiver } = Bolt;
-
-import dotenv from "dotenv";
-
-dotenv.config();
+import { SLACK_BOT_TOKEN, SLACK_SIGNING_SECRET } from "../constants.js";
 
 // Create Express receiver to allow custom routes
 const receiver = new ExpressReceiver({
-  signingSecret: process.env.SLACK_SIGNING_SECRET!,
+  signingSecret: SLACK_SIGNING_SECRET!,
 });
 
 const app = new App({
-  token: process.env.SLACK_BOT_TOKEN!,
+  token: SLACK_BOT_TOKEN!,
   receiver,
 });
 

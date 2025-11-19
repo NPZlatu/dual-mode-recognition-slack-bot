@@ -1,2 +1,2 @@
 # npm run build
-# node ./dist/app/runRecognition.js
+# node ./dist/app/hooks/postCommit.js

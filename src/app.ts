@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
-import { app, receiver } from "../slack/boltApp.js";
-import githubWebhookRoute from "../routes/gitHubWebhook.js";
-import trelloWebhookRoute from "../routes/trelloWebhook.js";
+import { app, receiver } from "./slack/boltApp.js";
+import githubWebhookRoute from "./hooks/gitHubWebhook.js";
+import trelloWebhookRoute from "./hooks/trelloWebhook.js";
 import express from "express";
-
+import processBatchEvents from "./utils/processBatchEvents.js";
 dotenv.config();
 
 // Allow parsing of JSON bodies for incoming webhooks
@@ -19,6 +19,8 @@ const startApp = async () => {
   const port = process.env.PORT || 3000;
   await app.start(port);
   console.log(`⚡️ Bolt app is running on port ${port}`);
+  // Start processing batch events
+  await processBatchEvents();
 };
 
 startApp();

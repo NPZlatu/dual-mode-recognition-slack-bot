@@ -1,6 +1,6 @@
 import express from "express";
-import sendDmToUserByEmail from "../utils/sendDm.js";
-import { SLACK_USER_EMAIL } from "../constants/index.js";
+import processWinEvent from "../utils/processWinEvent.js";
+import { SLACK_USER_EMAIL, TRELLO_DONE_RECOGNITION } from "../constants.js";
 
 const router = express.Router();
 
@@ -25,20 +25,15 @@ router.post("/trello-events", async (req, res) => {
           .includes("done")
       ) {
         const card = action.data.card || {};
-        console.log(card, "card info");
         const cardName = card.name || "Unnamed card";
         const cardUrl = `https://trello.com/c/${card.shortLink}`;
 
-        const message =
-          `🎉 Outstanding work — the task *${cardName}* is DONE ✅\n\n` +
-          `Your focus, ownership, and attention to quality made this happen. 🚀`;
-
         try {
-          await sendDmToUserByEmail(SLACK_USER_EMAIL, {
-            text: message,
+          await processWinEvent({
+            email: SLACK_USER_EMAIL,
+            text: TRELLO_DONE_RECOGNITION(cardName),
             link: cardUrl,
           });
-          console.log("Sent Trello Done DM");
         } catch (err) {
           console.error("Failed to send Trello DM:", err);
         }

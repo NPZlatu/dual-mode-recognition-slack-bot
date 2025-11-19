@@ -1,8 +1,8 @@
 /* This code snippet is importing necessary modules and functions for setting up a route handler using
 Express in a TypeScript environment. */
 import express from "express";
-import sendDmToUserByEmail from "../utils/sendDm.js";
-import { SLACK_USER_EMAIL } from "../constants/index.js";
+import processWinEvent from "../utils/processWinEvent.js";
+import { SLACK_USER_EMAIL, FIRST_CI_PASS_AFTER_FAILURE } from "../constants.js";
 
 const router = express.Router();
 
@@ -40,20 +40,16 @@ router.post("/github-events", async (req, res) => {
         workflowHistory.set(key, recent);
 
         if (isRecoveryFromTwoFailures) {
-          // another "best" message similar to the first commit recognition
           const runLink = (run.html_url || payload?.workflow_run?.html_url || "").toString();
-          const niceWinMessage =
-            "Nice win! After two failed runs, this workflow succeeded — wonderful work! 🎉\n\n" +
-            "Celebrate the fix and keep the momentum going.";
 
           try {
-            await sendDmToUserByEmail(SLACK_USER_EMAIL, {
-              text: niceWinMessage,
+            await processWinEvent({
+              email: SLACK_USER_EMAIL,
+              text: FIRST_CI_PASS_AFTER_FAILURE,
               link: runLink || undefined,
             });
-            console.log("Sent nice-win DM");
           } catch (err) {
-            console.error("Failed to send nice-win DM:", err);
+            console.error("Failed to process nice-win DM:", err);
           }
         }
       }

@@ -46,3 +46,5 @@ coverage/
 ```// filepath: /Users/nirajpaudel/Documents/personal/Zlatu/dual-mode-recognition-slack-bot/.gitignore
 # Node modules
 node_modules/
+
+/src/generated/prisma
