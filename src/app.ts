@@ -2,25 +2,29 @@ import dotenv from "dotenv";
 import { app, receiver } from "./slack/boltApp.js";
 import githubWebhookRoute from "./hooks/gitHubWebhook.js";
 import trelloWebhookRoute from "./hooks/trelloWebhook.js";
+import { handleDeliveryCommand } from "./slack/api.js";
 import express from "express";
 import processBatchEvents from "./utils/processBatchEvents.js";
 dotenv.config();
 
-// Allow parsing of JSON bodies for incoming webhooks
-receiver.router.use(express.json());
+// Create an Express app
+const expressApp = express();
 
-// Mount the GitHub webhook route
-receiver.router.use("/", githubWebhookRoute);
-// Mount the Trello webhook route
-receiver.router.use("/", trelloWebhookRoute);
+// Parse JSON
+expressApp.use(express.json());
 
-// Start the Slack Bolt app
-const startApp = async () => {
-  const port = process.env.PORT || 3000;
-  await app.start(port);
-  console.log(`⚡️ Bolt app is running on port ${port}`);
-  // Start processing batch events
+// Custom webhook routes
+expressApp.use("/github", githubWebhookRoute);
+expressApp.use("/trello", trelloWebhookRoute);
+
+// Use receiver.router for Slack events
+expressApp.use("/", receiver.router);
+
+// Slash command
+app.command("/delivery", handleDeliveryCommand);
+
+const port = process.env.PORT || 3000;
+expressApp.listen(port, async () => {
+  console.log(`🚀 Server is running on port ${port}`);
   await processBatchEvents();
-};
-
-startApp();
+});

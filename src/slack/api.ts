@@ -1,4 +1,5 @@
 import { app } from "../slack/boltApp.js";
+import { PrismaClient } from "../generated/prisma/client.js";
 
 // Simple in-memory cache for email -> channelId
 const channelCache = new Map<string, string>();
@@ -63,6 +64,54 @@ export async function sendDmToUserByEmail(email: string, message: string) {
     }
   }
   return { ok: true, channelId };
+}
+
+export async function handleDeliveryCommand({
+  command,
+  ack,
+  respond,
+}: {
+  command: any;
+  ack: any;
+  respond: any;
+}) {
+  await ack();
+
+  const option = command.text?.trim().toLowerCase();
+  if (!option || (option !== "realtime" && option !== "digest")) {
+    return respond("Please specify an option:\n• realtime\n• digest");
+  }
+  const userId = command.user_id;
+
+  const prisma = new PrismaClient();
+  try {
+    const updateResult = await prisma.appSettings.updateMany({
+      where: { key: "delivery_mode", user_id: userId },
+      data: { value: option },
+    });
+    if (updateResult.count === 0) {
+      await prisma.appSettings.create({
+        data: { key: "delivery_mode", value: option, user_id: userId },
+      });
+    }
+  } catch (error) {
+    console.error("Error updating delivery mode:", error);
+    return respond(
+      "❌ An error occurred while updating your delivery mode. Please try again later.",
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
+
+  if (option === "realtime") {
+    return respond(`🚀 Delivery mode set to *Realtime*! Messages will be delivered instantly.`);
+  }
+
+  if (option === "digest") {
+    return respond(
+      `📦 Delivery mode set to *Digest*! Messages will be sent in a batch at *6 PM* every day.`,
+    );
+  }
 }
 
 export default sendDmToUserByEmail;

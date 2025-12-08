@@ -16,17 +16,6 @@ export const SLACK_USER_EMAIL = "nirazlatu@gmail.com";
 export const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN;
 export const SLACK_SIGNING_SECRET = process.env.SLACK_SIGNING_SECRET;
 
-// DELIVERY MODE
-const REALTIME_MODE = "REALTIME";
-const DIGEST_MODE = "DIGEST";
-export const RECOGNITION_MODES = {
-  REALTIME: REALTIME_MODE,
-  DIGEST: DIGEST_MODE,
-};
-export const DELIVERY_MODE = process.env.DELIVERY_MODE || RECOGNITION_MODES.REALTIME;
-export const IS_REALTIME_MODE = DELIVERY_MODE === RECOGNITION_MODES.REALTIME;
-export const IS_DIGEST_MODE = DELIVERY_MODE === RECOGNITION_MODES.DIGEST;
-
 //DB CONFIG
 export const DB_HOST = process.env.DB_HOST || "localhost";
 export const DB_USER = process.env.DB_USER || "root";
@@ -35,5 +24,5 @@ export const DB_NAME = process.env.DB_NAME || "tiny_wins_db";
 export const DB_URL = `mysql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`;
 
 //CRON CONFIG
-// CRON_PATTERN="0 18 * * *"   // everyday at 6PM
-export const CRON_PATTERN = "*/2 * * * *"; // every 2 mins
+// export const CRON_PATTERN = "0 18 * * *"; // everyday at 6PM
+export const CRON_PATTERN = "*/20 * * * * *"; // every 2 seconds

@@ -28,3 +28,10 @@ model MessageQueue {
   createdDateTime    DateTime  @default(now())
   deliveredDateTime  DateTime?
 }
+
+model AppSettings {
+  id      Int       @id @default(autoincrement())
+  key     String 
+  value   String
+  user_id String
+}

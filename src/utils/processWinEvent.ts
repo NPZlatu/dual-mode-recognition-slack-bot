@@ -1,5 +1,5 @@
 import sendDMToUserByEmail from "../slack/api.js";
-const { IS_REALTIME_MODE } = await import("../constants.js");
+import getDeliveryMode from "../db/getDeliveryMode.js";
 const { getUserIdByEmail, getOrOpenChannelId } = await import("../slack/api.js");
 import saveRecognitionToDB from "../db/saveRecognition.js";
 import type { EventData } from "../types/slackTypes.js";
@@ -7,6 +7,12 @@ import type { EventData } from "../types/slackTypes.js";
 const processWinEvent = async (eventData: EventData) => {
   const { email, text, link } = eventData;
   const message = link ? `${text}\n\n${link}` : text;
+  const userId = await getUserIdByEmail(email);
+  if (!userId) {
+    throw new Error("User ID not found for email: " + email);
+  }
+  const deliveryMode = await getDeliveryMode(userId);
+  const IS_REALTIME_MODE = deliveryMode === "realtime";
 
   if (IS_REALTIME_MODE) {
     console.log("Processing Win Event in Realtime Mode");
