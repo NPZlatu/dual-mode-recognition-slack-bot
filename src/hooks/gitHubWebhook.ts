@@ -13,7 +13,6 @@ router.post("/github-events", async (req, res) => {
   try {
     const ghEvent = (req.get("x-github-event") || "").toString();
     const payload = req.body as any;
-    console.log("HEREE");
 
     // Detect GitHub Actions workflow run completion
     if (ghEvent === "workflow_run") {
